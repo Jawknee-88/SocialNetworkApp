@@ -5,8 +5,9 @@ import java.util.HashMap;
 public class Users {
     private HashMap<String, User> users = new HashMap<>();
 
-    public void addUser(User user) {
+    public User addUser(User user) {
         users.put(user.getName(), user);
+        return users.get(user);
     }
 
 

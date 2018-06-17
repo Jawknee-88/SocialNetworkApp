@@ -1,7 +1,7 @@
 package com.mikeriddle.socialnetworkapp;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.*;
 
 public class User {
 
@@ -29,5 +29,18 @@ public class User {
     public void addMessage(String messageText) {
         Message message = new Message(messageText);
         messages.put(message.getTimestamp(), message);
+    }
+
+
+    public String getAllMessagesToString() {
+        String messagesText = "";
+
+        SortedSet<LocalDateTime> keys = new TreeSet<>(getMessages().keySet());
+        for (LocalDateTime key : keys) {
+            Message value = getMessages().get(key);
+            messagesText = messagesText + value.toString();
+        }
+
+        return messagesText;
     }
 }

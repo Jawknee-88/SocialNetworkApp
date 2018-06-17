@@ -7,7 +7,11 @@ public class CommandParser {
     public String parseInput(String input, Users users) {
         final String[] splitInput = input.split("\\s+", 3);
         String output = "";
-        if(splitInput[1].equals("->")) {
+        if(splitInput.length == 1) {
+            ReadCommand readCommand = new ReadCommand();
+            output = readCommand.execute(splitInput, users);
+        }
+        else if(splitInput[1].equals("->")) {
             PostCommand postCommand = new PostCommand();
             postCommand.execute(splitInput, users);
             output = "";
