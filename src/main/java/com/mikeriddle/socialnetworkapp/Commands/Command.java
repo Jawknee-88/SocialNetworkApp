@@ -4,5 +4,5 @@ import com.mikeriddle.socialnetworkapp.Users;
 
 public interface Command {
 
-    String execute(String[] command, Users users);
+    String execute(String[] inputParams, Users users);
 }

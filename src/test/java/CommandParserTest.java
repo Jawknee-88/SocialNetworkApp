@@ -5,7 +5,10 @@ import com.mikeriddle.socialnetworkapp.Users;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandParserTest {
 
@@ -17,7 +20,6 @@ public class CommandParserTest {
         users = new Users();
         commandParser = new CommandParser();
     }
-
 
     @Test
     public void inputWithPostingCommandFormatShouldAddNewUserIfITDoesntExist() {
@@ -53,5 +55,22 @@ public class CommandParserTest {
         assertEquals(output, "Test message\n" +
                 "A second test message\n" +
                 "A third test message\n");
+    }
+
+    @Test
+    public void inputWithFollowCommandShouldAddAUserToTheFollowingList() {
+        HashSet<User> expectedFollowing = new HashSet<>();
+        User bob = new User("Bob");
+        expectedFollowing.add(bob);
+        users.addUser(new User("Alice"));
+        users.addUser(new User("Bob"));
+
+        commandParser.parseInput("Alice follows Bob", users);
+
+        HashSet<User> following = users.getUser("Alice").getFollowing();
+        for(User u:following) {
+            assertEquals(u.getName(), "Bob");
+        }
+
     }
 }

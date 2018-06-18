@@ -15,6 +15,9 @@ public class CommandParser {
             PostCommand postCommand = new PostCommand();
             postCommand.execute(splitInput, users);
             output = "";
+        } else if(splitInput[1].equals("follows")) {
+            FollowCommand followCommand = new FollowCommand();
+            followCommand.execute(splitInput, users);
         }
 
         return output;

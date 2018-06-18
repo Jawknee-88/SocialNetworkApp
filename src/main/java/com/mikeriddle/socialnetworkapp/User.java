@@ -7,6 +7,7 @@ public class User {
 
     private String name;
     private Timeline timeline;
+    private HashSet<User> following = new HashSet<>();
 
     private HashMap<LocalDateTime, Message> messages = new HashMap<>();
 
@@ -42,5 +43,13 @@ public class User {
         }
 
         return messagesText;
+    }
+
+    public void followUser(User user) {
+        following.add(user);
+    }
+
+    public HashSet<User> getFollowing() {
+        return following;
     }
 }
