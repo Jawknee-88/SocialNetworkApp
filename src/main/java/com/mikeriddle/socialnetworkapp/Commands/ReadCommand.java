@@ -9,7 +9,7 @@ public class ReadCommand implements Command {
     @Override
     public String execute(String[] inputParams, Users users) {
         User user = users.getUser(inputParams[0]);
-        return user.getAllMessagesToString();
+        return user.getAllPostsToString();
 
     }
 }

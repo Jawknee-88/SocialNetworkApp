@@ -8,12 +8,12 @@ public class User {
     private String name;
     private Timeline timeline;
     private HashSet<User> following = new HashSet<>();
-
-    private HashMap<LocalDateTime, Message> messages = new HashMap<>();
+    private HashMap<LocalDateTime, Post> posts = new HashMap<>();
 
     public User(String name) {
         this.name = name;
         timeline = new Timeline();
+        this.followUser(this);
     }
 
     public String getName() {
@@ -23,26 +23,32 @@ public class User {
         return timeline;
     }
 
-    public HashMap<LocalDateTime, Message> getMessages() {
-        return messages;
+    public HashMap<LocalDateTime, Post> getPosts() {
+        return posts;
     }
 
-    public void addMessage(String messageText) {
-        Message message = new Message(messageText);
-        messages.put(message.getTimestamp(), message);
+    public void addPost(String postText) {
+        Post post = new Post(postText, this);
+        posts.put(post.getTimestamp(), post);
     }
 
 
-    public String getAllMessagesToString() {
-        String messagesText = "";
+    public String getAllPostsToString() {
+        String postsText = "";
 
-        SortedSet<LocalDateTime> keys = new TreeSet<>(getMessages().keySet());
+        SortedSet<LocalDateTime> keys = new TreeSet<>(getPosts().keySet());
         for (LocalDateTime key : keys) {
-            Message value = getMessages().get(key);
-            messagesText = messagesText + value.toString();
+            Post value = getPosts().get(key);
+            postsText = postsText + value.toString();
         }
 
-        return messagesText;
+        return postsText;
+    }
+
+    public SortedMap<LocalDateTime, Post> getSortedPosts() {
+        SortedMap<LocalDateTime, Post> sortedPosts = new TreeMap<>(getPosts());
+
+        return sortedPosts;
     }
 
     public void followUser(User user) {
@@ -51,5 +57,20 @@ public class User {
 
     public HashSet<User> getFollowing() {
         return following;
+    }
+
+    public String getWall() {
+        String wallPosts = "";
+        SortedMap<LocalDateTime, Post> orderedMessages = new TreeMap<>();
+
+        following.stream().forEach(user -> orderedMessages.putAll(user.getSortedPosts()));
+
+        for(Map.Entry<LocalDateTime,Post> entry : orderedMessages.entrySet()) {
+            Post post = entry.getValue();
+
+            wallPosts += post.toStringWithUserPrepend();
+        }
+
+        return wallPosts;
     }
 }

@@ -5,13 +5,13 @@ import java.util.HashMap;
 
 public class Timeline {
 
-    HashMap<LocalDateTime, Message> messages;
+    HashMap<LocalDateTime, Post> posts;
 
     public Timeline(){
-        messages = new HashMap<>();
+        posts = new HashMap<>();
     }
 
-    public HashMap<LocalDateTime, Message> getMessages() {
-        return messages;
+    public HashMap<LocalDateTime, Post> getPosts() {
+        return posts;
     }
 }

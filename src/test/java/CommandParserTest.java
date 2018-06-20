@@ -1,21 +1,26 @@
 import com.mikeriddle.socialnetworkapp.Commands.CommandParser;
-import com.mikeriddle.socialnetworkapp.Message;
+import com.mikeriddle.socialnetworkapp.Post;
 import com.mikeriddle.socialnetworkapp.User;
 import com.mikeriddle.socialnetworkapp.Users;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.Assert.assertEquals;
+
 
 public class CommandParserTest {
 
     CommandParser commandParser;
     Users users;
 
-    @BeforeEach
+    @Before
     public void before() {
         users = new Users();
         commandParser = new CommandParser();
@@ -30,31 +35,42 @@ public class CommandParserTest {
     }
 
     @Test
-    public void inputWithPostingCommandFormatShouldAddANewMessageToTheUser() {
+    public void inputWithPostingCommandFormatShouldAddANewPostToTheUser() {
         String input = "Alice -> I love the weather today";
         commandParser.parseInput(input, users);
 
         assertEquals(users.getUsers().size(),1);
-        assertEquals(users.getUser("Alice").getMessages().size(),1);
-        for (Message value : users.getUser("Alice").getMessages().values()) {
-            assertEquals(value.toString(), "I love the weather today\n");
+        assertEquals(users.getUser("Alice").getPosts().size(),1);
+        for (Post value : users.getUser("Alice").getPosts().values()) {
+            assertTrue(value.toString().contains("I love the weather today"));
         }
     }
 
     @Test
     public void inputWithReadCommandShouldReturnChronologicalPosts() {
         users.addUser(new User("Alice"));
-        users.getUser("Alice").addMessage("Test message");
-        users.getUser("Alice").addMessage("A second test message");
-        users.getUser("Alice").addMessage("A third test message");
+        users.getUser("Alice").addPost("Test message");
+        //Adding sleep as for some reason items aren't added
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        users.getUser("Alice").addPost("A second test message");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        users.getUser("Alice").addPost("A third test message");
 
         String input = "Alice";
 
         String output = commandParser.parseInput(input, users);
 
-        assertEquals(output, "Test message\n" +
-                "A second test message\n" +
-                "A third test message\n");
+        assertEquals(output, "Test message ( 0 seconds ago )\n" +
+                "A second test message ( 0 seconds ago )\n" +
+                "A third test message ( 0 seconds ago )\n");
     }
 
     @Test
@@ -68,9 +84,7 @@ public class CommandParserTest {
         commandParser.parseInput("Alice follows Bob", users);
 
         HashSet<User> following = users.getUser("Alice").getFollowing();
-        for(User u:following) {
-            assertEquals(u.getName(), "Bob");
-        }
-
+        assertThat(following, hasItem(hasProperty("name", is("Alice"))));
+        assertThat(following, hasItem(hasProperty("name", is("Bob"))));
     }
 }

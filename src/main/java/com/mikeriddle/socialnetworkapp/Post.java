@@ -4,14 +4,16 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Message {
+public class Post {
 
-    private String message;
+    private String postText;
     private LocalDateTime timestamp;
     Clock clock;
+    User user;
 
-    public Message(String message) {
-        this.message = message;
+    public Post(String postText, User user) {
+        this.postText = postText;
+        this.user = user;
         timestamp = LocalDateTime.now();
     }
 
@@ -19,8 +21,9 @@ public class Message {
     This method is used for testing so that a custom clock can be passed in, instead of
     mocking static method LocalDateTime.now();
      */
-    public Message(String message, Clock clock) {
-        this.message = message;
+    public Post(String postText, Clock clock, User user) {
+        this.postText = postText;
+        this.user = user;
         this.clock = clock;
         timestamp = LocalDateTime.now(clock);
     }
@@ -30,7 +33,11 @@ public class Message {
     }
 
     public String toString() {
-        return message + " ( " + getTimeElapsedSincePost(timestamp) + " )\n";
+        return postText + " ( " + getTimeElapsedSincePost(timestamp) + " )\n";
+    }
+
+    public String toStringWithUserPrepend() {
+        return user.getName() + " - " + toString();
     }
 
     private String getTimeElapsedSincePost(LocalDateTime time){

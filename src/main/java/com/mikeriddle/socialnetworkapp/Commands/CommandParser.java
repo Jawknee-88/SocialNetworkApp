@@ -18,6 +18,9 @@ public class CommandParser {
         } else if(splitInput[1].equals("follows")) {
             FollowCommand followCommand = new FollowCommand();
             followCommand.execute(splitInput, users);
+        } else if(splitInput[1].equals("wall")) {
+            WallCommand wallCommand = new WallCommand();
+            output = wallCommand.execute(splitInput, users);
         }
 
         return output;
